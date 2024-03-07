@@ -1,0 +1,33 @@
+#include <iostream>
+using namespace std;
+// Funcția care returnează cel mai mic multiplu comun (CMMD) al lui a și b
+int complexitateEuclid(int a, int b, int& x, int& y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+
+    int x1, y1;
+    int cmmd = complexitateEuclid(b, a % b, x1, y1);
+
+    x = y1;
+    y = x1 - (a / b) * y1;
+
+    return cmmd;
+}
+
+int main() {
+    int a = 35, b = 15;
+    int x, y;
+    int cmmd = complexitateEuclid(a, b, x, y);
+
+    std::cout << "Cel mai mic multiplu comun al lui " << a << " și " << b << " este " << cmmd <<endl;
+    std::cout << "Coeficienții Bezout sunt: x = " << x << ", y = " << y <<endl;
+
+    return 0;
+}
+
+/*Pentru a calcula complexitatea algoritmului lui Euclid extins, putem lua în considerare numărul de operații de bază efectuate de algoritm în funcție de dimensiunile datelor de intrare.
+În cadrul fiecărei iterații, majoritatea operațiilor sunt operații aritmetice de bază (cum ar fi adunare, scădere, împărțire și modulo), care au o complexitate constantă. Astfel, putem concluziona că complexitatea totală a algoritmului lui Euclid extins este 
+O(log(min(a,b))), deoarece numărul de operații de bază crește proporțional cu numărul de iterații, care este logaritmic în funcție de dimensiunile datelor de intrare a si b. */
