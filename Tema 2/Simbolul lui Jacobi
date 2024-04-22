@@ -1,0 +1,53 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int simbolul_jacobi(int a, int p) {
+    // Verifică dacă p este prim
+    if (p <= 1 || p % 2 == 0) {
+        throw invalid_argument("p trebuie să fie un număr prim impar");
+    }
+
+    // Asigură că a este între 0 și p-1
+    a = a % p;
+    if (a < 0) {
+        a += p;
+    }
+
+    // Cazuri speciale
+    if (a == 0) {
+        return 0;
+    }
+    else if (a == 1) {
+        return 1;
+    }
+    else if (a == 2) {
+        if (p % 8 == 1 || p % 8 == 7) {
+            return 1;
+        }
+        else if (p % 8 == 3 || p % 8 == 5) {
+            return -1;
+        }
+    }
+
+    // Proprietatea de recurență a simbolului Jacobi
+    if (a % 2 == 0) {
+        return simbolul_jacobi(a / 2, p) * simbolul_jacobi(2, p);
+    }
+    else {
+        if (a < p / 2) {
+            return simbolul_jacobi(a, p);
+        }
+        else {
+            return -simbolul_jacobi(p - a, p);
+        }
+    }
+}
+
+int main() {
+    int a = 6;
+    int p = 11;
+    cout << "Simbolul lui Jacobi (" << a << "/" << p << "): " << simbolul_jacobi(a, p) << endl;
+    return 0;
+}
