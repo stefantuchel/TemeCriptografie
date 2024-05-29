@@ -1,0 +1,43 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+vector<int> Fermat(int n) {
+    vector<int> factors;
+
+    while (n % 2 == 0) {
+        factors.push_back(2);
+        n /= 2;
+    }
+
+    for (int i = 3; i * i <= n; i += 2) {
+        while (n % i == 0) {
+            factors.push_back(i);
+            n /= i;
+        }
+    }
+
+    if (n > 2) {
+        factors.push_back(n);
+    }
+
+    return factors;
+}
+
+int main() {
+    std::cout << "Scrieti un numar:" << std::endl;
+    int number;
+    cin >> number;
+
+    vector<int> factors = Fermat(number);
+
+    cout << "Factorizarea in numere prime a nr. " << number << ": ";
+    for (int factor : factors) {
+        cout << factor << " ";
+    }
+    cout << std::endl;
+
+    return 0;
+}
