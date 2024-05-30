@@ -1,0 +1,107 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+// Functie pentru a verifica dacă un număr este prim
+bool isPrime(int n) {
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+    for (int i = 5; i * i <= n; i += 6) {
+        if (n % i == 0 || n % (i + 2) == 0) return false;
+    }
+    return true;
+}
+
+// Functie pentru a determina cmmdc folosind algoritmul lui Euclid
+int cmmdc(int a, int b) {
+    if (b == 0) return a;
+    return cmmdc(b, a % b);
+}
+
+// Functie pentru a determina inversul modular folosind algoritmul lui Euclid extins
+int modInverse(int a, int m) {
+    a = a % m;
+    for (int x = 1; x < m; x++) {
+        if ((a * x) % m == 1) return x;
+    }
+    return 1;
+}
+
+// Functie pentru a calcula c^d mod n
+int modularExponentiation(int c, int d, int n) {
+    int result = 1;
+    c = c % n;
+    while (d > 0) {
+        if (d % 2 == 1) result = (result * c) % n;
+        d = d >> 1;
+        c = (c * c) % n;
+    }
+    return result;
+}
+
+// Functie pentru a cripta mesajul
+int encrypt(int message, int n) {
+    return (message * message) % n;
+}
+
+// Functie pentru a decripta mesajul
+int decrypt(int c, int p, int q, int n) {
+    int u, v;
+    int r = c % p;
+    int s = c % q;
+
+    int cmmdcResult = cmmdc(p, q);
+    if (cmmdcResult != 1) {
+        cerr << "Error: p and q are not coprime.\n";
+        return -1;
+    }
+
+    u = modInverse(p, q);
+    v = modInverse(q, p);
+
+    int x = (u * p * s + v * q * r) % n;
+    int y = (u * p * s - v * q * r) % n;
+
+    if (x < 0) x += n;
+    if (y < 0) y += n;
+
+
+    return x; 
+}
+
+int main() {
+    int p, q, n, message, encrypted, decrypted;
+
+    // Alegerea primelor p si q
+    do {
+        cout << "Enter prime number p: ";
+        cin >> p;
+    } while (!isPrime(p));
+
+    do {
+        cout << "Enter prime number q (different from p): ";
+        cin >> q;
+    } while (!isPrime(q) || p == q);
+
+    // Calcularea n si cheilor publice si private
+    n = p * q;
+    int publicKey = n;
+    pair<int, int> privateKey(p, q);
+
+    cout << "Public key (n): " << publicKey << endl;
+    cout << "Private key (p, q): (" << privateKey.first << ", " << privateKey.second << ")" << endl;
+
+    // Criptare
+    cout << "Enter message to encrypt: ";
+    cin >> message;
+    encrypted = encrypt(message, n);
+    cout << "Encrypted message: " << encrypted << endl;
+
+    // Decriptare
+    decrypted = decrypt(encrypted, privateKey.first, privateKey.second, n);
+    cout << "Decrypted message: " << decrypted << endl;
+
+    return 0;
+}
